@@ -1,0 +1,12 @@
+:root {
+    --color-text-header: #2D3834;
+    --color-text-body: #2D2824;
+    --color-link: #252;
+    --color-background-header: #CCFFED;
+    --color-background-borders: #5D5854;
+    --color-background-cards: #cCeFdD;
+    --color-background-body: #f4ffff;
+    --color-line-header: var(--color-link);
+    --color-div-allow: #aaeFaa;
+    --color-div-deny: #ff9F9D;
+}

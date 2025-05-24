@@ -1,0 +1,31 @@
+main {
+    margin: 0 2rem 2rem 2rem;
+    h2 {
+        font-size: clamp(3rem, 2rem + 5vw, 5rem);
+        text-align: center;
+    }
+    div {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: 5rem;
+    }
+    a {
+        flex-shrink: 1;
+        font-size: 3rem;
+        background-color: var(--color-background-cards);
+        color: var(--color-text-header);
+        border: var(--color-background-borders) solid 0.2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 20vh;
+        text-decoration: none;
+        margin: 0;
+        text-align: center;
+    }
+}
+
+
+
+
+
