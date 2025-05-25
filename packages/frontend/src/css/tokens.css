@@ -10,3 +10,16 @@
     --color-div-allow: #aaeFaa;
     --color-div-deny: #ff9F9D;
 }
+
+.dark-mode {
+    --color-text-header: #ADF8A4;
+    --color-text-body: #CDF8C4;
+    --color-link: #AFA;
+    --color-background-header: #2C4F3C;
+    --color-background-borders: #aaeFaa;
+    --color-background-cards: #2C5F3C;
+    --color-background-body: #444040;
+    --color-line-header: var(--color-link);
+    --color-div-allow: #1a5F1a;
+    --color-div-deny: #7f1F1D;
+}

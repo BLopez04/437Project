@@ -94,7 +94,9 @@ main {
                 }
             }
 
-
+            .recipe {
+                grid-template-columns: 1fr 2fr 1fr;
+            }
             .yes {
                 background-color: var(--color-div-allow);
             }

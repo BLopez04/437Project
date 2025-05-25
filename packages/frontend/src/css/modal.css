@@ -11,7 +11,7 @@
     background-color: rgba(0, 0, 0, 0.2);
     .inner {
         background-color: var(--color-background-body);
-        max-width: 80%;
+        width: 80%;
         padding: 2rem;
     }
     .heading {
@@ -32,14 +32,13 @@
 
         li {
             box-sizing: border-box;
-            font-size: 1rem;
             background-color: var(--color-background-cards);
             color: var(--color-text-header);
             border: var(--color-background-borders) solid 0.2rem;
             display: grid;
             gap: 0.2rem;
             grid-template-rows: 1rem 1fr 2fr;
-            min-height: 2vh;
+            min-height: 3vh;
             text-decoration: none;
             padding: 0.5rem;
             text-align: center;
@@ -55,8 +54,7 @@
 
             .name {
                 text-align: center;
-                white-space: nowrap;
-                overflow: auto;
+                text-wrap: balance;
             }
 
             .remove {
@@ -64,12 +62,14 @@
                 height: 2rem;
                 justify-self: end;
             }
-            .ingredients .ing {;
+            .ingredients .ing {
                 grid-template-columns: 1fr 1fr 1fr 1fr;
+                height: 3rem;
             }
 
             .steps {
-                padding-top: 2rem
+                padding-top: 2rem;
+                padding-bottom: 0.3rem;
             }
         }
 

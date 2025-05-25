@@ -6,18 +6,20 @@ import type {IRecipe} from "../App.tsx";
 interface IShortRecipeItemProps {
     recipe: IRecipe
     setModalOn: (recipe: IRecipe) => void;
-    possible: boolean;
+    setRecipe: (name: string) => void;
+    selectedRecipe: string;
 }
 
 function ShortRecipeItem(props : IShortRecipeItemProps) {
-
     return (
-        <li className={props.possible ? "yes" : "no"}>
+        <li className={`recipe ${props.recipe.possible ? "yes" : "no"}`}>
             <label className="Include">
                                     <span>
                                         Make?
                                     </span>
-                <input type="radio" name="include" value="no"/>
+                <input type="radio" disabled={!props.recipe.possible} name="include" value={props.recipe.name}
+                       checked={props.recipe.name === props.selectedRecipe}
+                onClick={() => props.setRecipe(props.recipe.name)}/>
             </label>
             <b className="name">{props.recipe.name}</b>
             <label className="Details">

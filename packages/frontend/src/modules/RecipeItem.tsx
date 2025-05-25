@@ -7,7 +7,7 @@ import IngredientItem from "./IngredientItem.tsx";
 interface IRecipeItemProps {
     recipe: IRecipe
     deleteRecipe: (name: string) => void;
-    onCLoseRequested?: () => void;
+    onCloseRequested?: () => void;
 }
 
 function RecipeItem(props : IRecipeItemProps) {
@@ -18,8 +18,8 @@ function RecipeItem(props : IRecipeItemProps) {
                 <button className="remove"
                         type="button"
                         onClick={() => {
-                            if (props.onCLoseRequested) {
-                                props.onCLoseRequested()
+                            if (props.onCloseRequested) {
+                                props.onCloseRequested()
                             }
                             props.deleteRecipe(props.recipe.name)}}>Remove
                 </button>

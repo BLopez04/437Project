@@ -7,10 +7,12 @@ import React, {useState} from "react";
 import AddIngredient from "./AddIngredient.tsx";
 
 interface IAddRecipeProps {
+    ingredients: IIngredient[]
     addRecipe: (recipe: IRecipe) => void;
     recipeIngredients: IIngredient[];
     addRecipeIngredient: (ingredient: IIngredient) => void;
     wipeIngredients: () => void;
+    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => boolean;
 }
 
 function AddRecipe(props: IAddRecipeProps) {
@@ -28,7 +30,10 @@ function AddRecipe(props: IAddRecipeProps) {
     function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         const newRecipe : IRecipe =
-            { name: nameFieldContents, steps: stepsFieldContents, ingredients: props.recipeIngredients }
+            { name: nameFieldContents, steps: stepsFieldContents, ingredients: props.recipeIngredients,
+            possible: false}
+        newRecipe.possible = props.possibleToMake(newRecipe, props.ingredients)
+        console.log(newRecipe)
         props.addRecipe(newRecipe);
         setName("");
         setSteps("");

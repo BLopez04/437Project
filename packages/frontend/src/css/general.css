@@ -6,9 +6,32 @@
     font-size: 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     height: 100vh;
+    main {
+        height: 100%;
+    }
 }
+
+button {
+    background-color: var(--color-background-header);
+    color: var(--color-text-body)
+}
+
+input {
+    background-color: var(--color-background-body);
+    color: var(--color-text-body)
+}
+
+select {
+    background-color: var(--color-background-body);
+    color: var(--color-text-body)
+}
+
+textarea {
+    background-color: var(--color-background-body);
+    color: var(--color-text-body)
+}
+
 
 @media (min-width: 60rem) {
     main {

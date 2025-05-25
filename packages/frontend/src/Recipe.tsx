@@ -13,8 +13,10 @@ import RecipeItem from "./modules/RecipeItem.tsx";
 interface IRecipeProps {
     username: string;
     recipes: IRecipe[];
+    ingredients: IIngredient[];
     addRecipe: (recipe: IRecipe) => void;
     deleteRecipe: (name: string) => void;
+    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => boolean;
 }
 
 function Recipe(props: IRecipeProps) {
@@ -55,11 +57,12 @@ function Recipe(props: IRecipeProps) {
             </ViewRecipesModal>
             <Header header="Add a Recipe" username={props.username}/>
             <main>
-                <button className="view-all" onClick={() => setIsOpen(true)}> View All Recipes</button>
                 <AddRecipe addRecipe={props.addRecipe}
+                           ingredients={props.ingredients}
                            addRecipeIngredient={addRecipeIngredient}
                            recipeIngredients={recipeIngredients}
                            wipeIngredients={wipeIngredients}
+                           possibleToMake={props.possibleToMake}
                 />
                 <ul role="list"
                     aria-labelledby="list-heading">
@@ -69,6 +72,7 @@ function Recipe(props: IRecipeProps) {
                                             deleteIngredient={deleteIngredient}/>)
                     }
                 </ul>
+                <button className="view-all" onClick={() => setIsOpen(true)}> View All Recipes</button>
             </main>
             <Footer/>
         </div>

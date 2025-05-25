@@ -8,39 +8,74 @@ import {useState} from "react";
 import type {IIngredient, IRecipe} from "./App.tsx";
 import RecipeItem from "./modules/RecipeItem.tsx";
 import ShortRecipeItem from "./modules/ShortRecipeItem.tsx";
+import EffectItem from "./modules/EffectItem.tsx";
 
 interface ICookProps {
     username: string;
     recipes: IRecipe[];
     ingredients: IIngredient[]
-    addRecipe: (recipe: IRecipe) => void;
     deleteRecipe: (name: string) => void;
+    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => void;
+    subtractIngredientAmounts: (amount1: number, unit1: string, amount2: number, unit2: string) => {amount: number, scale: string}
+    logChanges: (after: IIngredient[]) => void;
 }
 
 function Cook(props: ICookProps) {
     const [modalState, setModalState] =
     useState<{recipe?: IRecipe, isOpen: boolean}>({ recipe: undefined, isOpen: false });
+    const [selectedRecipe, setSelectedRecipe] = useState("")
+
+    const selectedActual = getRecipe(selectedRecipe)
+
+    function onSubmit() {
+        props.logChanges(afterIngredients)
+        setSelectedRecipe("")
+    }
+
+    const afterIngredients = selectedActual
+        ? selectedActual.ingredients
+            .map((uses) => {
+                const before = props.ingredients.find((before) => before.name === uses.name);
+                if (before) {
+                    return {
+                        name: before.name,
+                        amount: props.subtractIngredientAmounts(before.amount, before.scale, uses.amount, uses.scale).amount,
+                        scale: before.scale,
+                        type: before.type
+                    };
+                }
+                return null;
+            })
+            .filter((ingredient) => ingredient !== null) // Filters out null values
+        : [];
+
 
     function onCloseRequested() {
         const newState = { recipe: undefined, isOpen: false };
         setModalState(newState);
     }
 
+    function setRecipe(recipe: string) {
+        setSelectedRecipe(selectedRecipe === recipe ? "" : recipe)
+    }
+
+    function getRecipe(recipe: string) {
+        return(props.recipes.find(r => r.name === recipe))
+    }
 
     function setModalOn(recipe: IRecipe) {
         const newState = { recipe: recipe, isOpen: true }
         setModalState(newState)
     }
 
-
     return (
         <div className="body">
             <ViewRecipesModal isOpen={modalState.isOpen}
                               onCloseRequested={onCloseRequested}
-                              headerLabel="All Recipes">
+                              headerLabel={modalState.recipe ? modalState.recipe.name : ""}>
                 { modalState.recipe ? <RecipeItem recipe={modalState.recipe}
                                             deleteRecipe={props.deleteRecipe}
-                                            onCLoseRequested={onCloseRequested}/> :
+                                            onCloseRequested={onCloseRequested}/> :
                     ''}
             </ViewRecipesModal>
             <Header header="Cook a Meal" username={props.username}/>
@@ -52,11 +87,16 @@ function Cook(props: ICookProps) {
                             { props.recipes.map((recipe) =>
                                 <ShortRecipeItem recipe={recipe}
                                                  setModalOn={setModalOn}
-                                                    possible={false}
+                                                 setRecipe={setRecipe}
+                                                 selectedRecipe={selectedRecipe}
                                 />)}
                         </ul>
                         <label>
-                            <button className="submit">Make the Recipe!</button>
+                            <button className="submit" type="button"
+                                    disabled={!selectedRecipe}
+                                    onClick={onSubmit}>
+                                Make the Recipe!
+                            </button>
                         </label>
                     </fieldset>
 
@@ -64,32 +104,18 @@ function Cook(props: ICookProps) {
                         <h2>
                             Effects:
                         </h2>
-
                         <ul>
-                            <li className="no">
-                                <b className="name">Butter</b>
-                                <p className="before">4 oz</p>
-                                <p> {">"} </p>
-                                <p className="after">0 oz</p>
-                            </li>
-                            <li className="no">
-                                <b className="name">Fettuccine</b>
-                                <p className="before">16 oz</p>
-                                <p> {">"} </p>
-                                <p className="after">0 oz</p>
-                            </li>
-                            <li className="no">
-                                <b className="name">Parmesan</b>
-                                <p className="before">2 cups</p>
-                                <p> {">"} </p>
-                                <p className="after">1 cups</p>
-                            </li>
-                            <li className="no">
-                                <b className="name">Heavy Cream</b>
-                                <p className="before">24 oz</p>
-                                <p> {">"} </p>
-                                <p className="after">12 oz</p>
-                            </li>
+                            { selectedActual ?
+                                selectedActual.ingredients.map((ing) => {
+                                    const beforeIng = props.ingredients.find((b4) => b4.name === ing.name);
+                                    const afterIng = afterIngredients.find((af) => af?.name === ing.name);
+                                    return (<EffectItem name={ing.name}
+                                                before={beforeIng ? beforeIng.amount : 0}
+                                                scale={beforeIng ? beforeIng.scale : "oz"}
+                                                after={afterIng ? afterIng.amount : 0}
+                                    />)
+                                }) : ''}
+
                         </ul>
                     </div>
                 </form>
