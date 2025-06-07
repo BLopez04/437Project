@@ -3,7 +3,7 @@ import Home from "./Home";
 import Cook from "./Cook";
 import Ingredient from "./Ingredient";
 import Recipe from "./Recipe";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {ValidRoutes} from "../../backend/src/common/ValidRoutes.ts"
 import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
@@ -18,8 +18,9 @@ function App() {
     const [recipeList, setRecipeList] = useState<IApiRecipe[]>([]);
     const [authToken, setAuthToken] = useState<string>("");
     const [username, setUsername] = useState("Signed Out")
-
     const nav = useNavigate()
+    const ref = useRef(0)
+
     if (darkModeState) {
         document.body.classList.add("dark-mode");
     }
@@ -27,8 +28,40 @@ function App() {
 
     function changeToken(token: string) {
         setAuthToken(token);
-
+        fetchUserData(token);
         nav('/')
+    }
+
+    async function fetchUserData(token: string) {
+        const newRef = ref.current + 1;
+        ref.current = newRef;
+
+        try {
+            const res = await fetch("/api/users", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+
+            if (res.status >= 400) {
+                throw new Error(`HTTP error: ${res.status}`)
+            }
+
+            const { ingredients, recipes } = await res.json()
+
+            console.log()
+
+            if (ref.current == newRef) {
+                setIngredientList(ingredients);
+                setRecipeList(recipes)
+            }
+        }
+
+        catch(err) {
+            console.log(`Error is ${err}`);
+        }
     }
 
     function addRecipe(recipe: IApiRecipe) {

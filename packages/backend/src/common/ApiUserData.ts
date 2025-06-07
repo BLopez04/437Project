@@ -1,5 +1,4 @@
 export interface IApiUserData {
-    id: string;
     username: string;
     ingredients: IApiIngredient[];
     recipes: IApiRecipe[];
