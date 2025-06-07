@@ -1,11 +1,11 @@
 import "../css/tokens.css"
 import "../css/header.css"
 import "../css/formpagestyles.css"
-import type {IRecipe} from "../App.tsx";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import IngredientItem from "./IngredientItem.tsx";
 
 interface IRecipeItemProps {
-    recipe: IRecipe
+    recipe: IApiRecipe
     deleteRecipe: (name: string) => void;
     onCloseRequested?: () => void;
 }

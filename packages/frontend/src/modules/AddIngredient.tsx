@@ -2,11 +2,11 @@ import "../css/tokens.css"
 import "../css/header.css"
 import "../css/general.css"
 import "../css/addingredient.css"
-import type {IIngredient} from "../App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import {useState} from "react";
 
 interface IAddIngredientProps {
-    addIngredient: (ingredient: IIngredient) => void;
+    addIngredient: (ingredient: IApiIngredient) => void;
 }
 
 function AddIngredient(props: IAddIngredientProps) {
@@ -25,7 +25,7 @@ function AddIngredient(props: IAddIngredientProps) {
 
     function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
-        const newIngredient : IIngredient =
+        const newIngredient : IApiIngredient =
             { name: nameFieldContents, amount: amountFieldContents, scale: scaleContents,
             type: typeContents}
         props.addIngredient(newIngredient);

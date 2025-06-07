@@ -1,10 +1,10 @@
 import "../css/tokens.css"
 import "../css/header.css"
 import "../css/formpagestyles.css"
-import type {IIngredient} from "../App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 
 interface IIngredientItemProps {
-    ingredient: IIngredient
+    ingredient: IApiIngredient
     deleteIngredient?: (name: string) => void;
 }
 

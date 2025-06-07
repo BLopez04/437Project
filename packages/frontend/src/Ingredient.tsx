@@ -4,14 +4,14 @@ import "./css/general.css"
 import Header from "./modules/Header.tsx";
 import Footer from "./modules/Footer.tsx";
 import IngredientItem from "./modules/IngredientItem.tsx";
-import type {IIngredient} from "./App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import AddIngredient from "./modules/AddIngredient.tsx";
 
 interface IIngredientProps {
     username: string;
-    ingredients: IIngredient[];
+    ingredients: IApiIngredient[];
     deleteIngredient: (name: string) => void;
-    addIngredient: (ingredient: IIngredient) => void;
+    addIngredient: (ingredient: IApiIngredient) => void;
 }
 
 function Ingredient(props: IIngredientProps) {

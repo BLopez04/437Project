@@ -2,17 +2,18 @@ import "../css/tokens.css"
 import "../css/header.css"
 import "../css/general.css"
 import "../css/addingredient.css"
-import type {IIngredient, IRecipe} from "../App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import React, {useState} from "react";
 import AddIngredient from "./AddIngredient.tsx";
 
 interface IAddRecipeProps {
-    ingredients: IIngredient[]
-    addRecipe: (recipe: IRecipe) => void;
-    recipeIngredients: IIngredient[];
-    addRecipeIngredient: (ingredient: IIngredient) => void;
+    ingredients: IApiIngredient[]
+    addRecipe: (recipe: IApiRecipe) => void;
+    recipeIngredients: IApiIngredient[];
+    addRecipeIngredient: (ingredient: IApiIngredient) => void;
     wipeIngredients: () => void;
-    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => boolean;
+    possibleToMake: (recipe: IApiRecipe, ingredients: IApiIngredient[]) => boolean;
 }
 
 function AddRecipe(props: IAddRecipeProps) {
@@ -29,7 +30,7 @@ function AddRecipe(props: IAddRecipeProps) {
 
     function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
-        const newRecipe : IRecipe =
+        const newRecipe : IApiRecipe =
             { name: nameFieldContents, steps: stepsFieldContents, ingredients: props.recipeIngredients,
             possible: false}
         newRecipe.possible = props.possibleToMake(newRecipe, props.ingredients)

@@ -3,7 +3,8 @@ import "./css/tokens.css"
 import "./css/general.css"
 import Header from "./modules/Header.tsx";
 import Footer from "./modules/Footer.tsx";
-import type {IIngredient, IRecipe} from "./App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import AddRecipe from "./modules/AddRecipe.tsx";
 import React, {useState} from "react";
 import IngredientItem from "./modules/IngredientItem.tsx";
@@ -12,18 +13,18 @@ import RecipeItem from "./modules/RecipeItem.tsx";
 
 interface IRecipeProps {
     username: string;
-    recipes: IRecipe[];
-    ingredients: IIngredient[];
-    addRecipe: (recipe: IRecipe) => void;
+    recipes: IApiRecipe[];
+    ingredients: IApiIngredient[];
+    addRecipe: (recipe: IApiRecipe) => void;
     deleteRecipe: (name: string) => void;
-    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => boolean;
+    possibleToMake: (recipe: IApiRecipe, ingredients: IApiIngredient[]) => boolean;
 }
 
 function Recipe(props: IRecipeProps) {
-    const [recipeIngredients, setRecipeIngredients] = React.useState<IIngredient[]>([])
+    const [recipeIngredients, setRecipeIngredients] = React.useState<IApiIngredient[]>([])
     const [isOpen, setIsOpen] = useState(false);
 
-    function addRecipeIngredient(ingredient: IIngredient) {
+    function addRecipeIngredient(ingredient: IApiIngredient) {
         const updatedIngredients = recipeIngredients.filter((ing) => ing.name !== ingredient.name)
         const withNew = [ingredient, ...updatedIngredients]
         setRecipeIngredients(withNew)
@@ -36,7 +37,7 @@ function Recipe(props: IRecipeProps) {
     }
 
     function wipeIngredients() {
-        const mt : IIngredient[] = [];
+        const mt : IApiIngredient[] = [];
         setRecipeIngredients(mt)
     }
 

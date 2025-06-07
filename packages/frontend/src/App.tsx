@@ -1,43 +1,37 @@
-import {Route, Routes} from "react-router";
+import {Route, Routes, useNavigate} from "react-router";
 import Home from "./Home";
 import Cook from "./Cook";
 import Ingredient from "./Ingredient";
 import Recipe from "./Recipe";
 import {useState} from "react";
+import {ValidRoutes} from "../../backend/src/common/ValidRoutes.ts"
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
+import {LoginPage} from "./LoginPage.tsx";
+import {ProtectedRoute} from "./ProtectedRoute.tsx";
 
-export interface IIngredient {
-    name: string;
-    amount: number;
-    scale: string;
-    type: string;
-}
-
-export interface IRecipe {
-    name: string;
-    steps: string;
-    possible: boolean;
-    ingredients: IIngredient[]
-}
-
-interface IAppProps {
-    id: string;
-    username: string;
-    ingredients: IIngredient[]
-    recipes: IRecipe[]
-}
 
 const darkModeState = localStorage.getItem("darkMode") === "true";
 
-function App(props: IAppProps) {
-    const [ingredientList, setIngredientList] = useState(props.ingredients);
-    const [recipeList, setRecipeList] = useState(props.recipes);
+function App() {
+    const [ingredientList, setIngredientList] = useState<IApiIngredient[]>([]);
+    const [recipeList, setRecipeList] = useState<IApiRecipe[]>([]);
+    const [authToken, setAuthToken] = useState<string>("");
+    const [username, setUsername] = useState("Signed Out")
 
+    const nav = useNavigate()
     if (darkModeState) {
         document.body.classList.add("dark-mode");
     }
-    console.log(darkModeState)
+    console.log(authToken)
 
-    function addRecipe(recipe: IRecipe) {
+    function changeToken(token: string) {
+        setAuthToken(token);
+
+        nav('/')
+    }
+
+    function addRecipe(recipe: IApiRecipe) {
         const updatedRecipes = recipeList.filter((rec) => rec.name !== recipe.name)
         const withNew = [recipe, ...updatedRecipes]
         setRecipeList(withNew)
@@ -48,7 +42,7 @@ function App(props: IAppProps) {
         setRecipeList(updatedRecipes);
     }
 
-    function addIngredient(ingredient: IIngredient) {
+    function addIngredient(ingredient: IApiIngredient) {
         const updatedIngredients = ingredientList.filter((ing) => ing.name !== ingredient.name)
         const withNew = [ingredient, ...updatedIngredients]
         setIngredientList(withNew)
@@ -61,7 +55,7 @@ function App(props: IAppProps) {
         refreshRecipes(updatedIngredients)
     }
 
-    function refreshRecipes(ingredients: IIngredient[]) {
+    function refreshRecipes(ingredients: IApiIngredient[]) {
         const updatedRecipes = recipeList.map((recipe) => {
             return {
                 name: recipe.name,
@@ -75,7 +69,7 @@ function App(props: IAppProps) {
         setRecipeList(updatedRecipes)
     }
 
-    function possibleToMake(recipe: IRecipe, ingredients: IIngredient[]) {
+    function possibleToMake(recipe: IApiRecipe, ingredients: IApiIngredient[]) {
         for (const RIng of recipe.ingredients) {
             const found = ingredients.find((IIng) => IIng.name === RIng.name);
             if (!found) {
@@ -106,7 +100,7 @@ function App(props: IAppProps) {
         return {amount: result, scale: unit1};
     }
 
-    function logChanges(after: IIngredient[]) {
+    function logChanges(after: IApiIngredient[]) {
         const updatedIngredients = ingredientList
             .map((before) => {
                 const updateNeeded = after.find((af) => af.name === before.name);
@@ -119,31 +113,51 @@ function App(props: IAppProps) {
         console.log(updatedIngredients)
     }
 
-
-
     return (
         <div>
             <Routes>
-                <Route path="/" element={<Home username={props.username}/>} />
-                <Route path="/cook" element={<Cook username={props.username}
-                recipes={recipeList} ingredients={ingredientList}
-                deleteRecipe={deleteRecipe}
-                possibleToMake={possibleToMake}
-                subtractIngredientAmounts={subtractIngredientAmounts}
-                logChanges={logChanges}/>} />
-                <Route path="/ingredient" element={<Ingredient username={props.username}
-                    ingredients={ingredientList}
-                    deleteIngredient={deleteIngredient}
-                    addIngredient={addIngredient}/>}/>
-                <Route path="/recipe" element={<Recipe username={props.username}
-                    recipes={recipeList} ingredients={props.ingredients}
-                    addRecipe={addRecipe}
-                    deleteRecipe={deleteRecipe}
-                    possibleToMake={possibleToMake}/>} />
-                <Route path="*" element={<p> This Page Does Not Exist.</p>} />
+                <Route path={ValidRoutes.HOME} element={
+                    <ProtectedRoute authToken={authToken}>
+                        <Home username={username} />
+                    </ProtectedRoute>
+                } />
+                <Route path={ValidRoutes.COOK} element={
+                    <ProtectedRoute authToken={authToken}>
+                        <Cook username={username}
+                              recipes={recipeList} ingredients={ingredientList}
+                              deleteRecipe={deleteRecipe}
+                              possibleToMake={possibleToMake}
+                              subtractIngredientAmounts={subtractIngredientAmounts}
+                              logChanges={logChanges} />
+                    </ProtectedRoute>
+                } />
+                <Route path={ValidRoutes.INGREDIENT} element={
+                    <ProtectedRoute authToken={authToken}>
+                        <Ingredient username={username}
+                                    ingredients={ingredientList}
+                                    deleteIngredient={deleteIngredient}
+                                    addIngredient={addIngredient} />
+                    </ProtectedRoute>
+                } />
+                <Route path={ValidRoutes.RECIPE} element={
+                    <ProtectedRoute authToken={authToken}>
+                        <Recipe username={username}
+                                recipes={recipeList} ingredients={ingredientList}
+                                addRecipe={addRecipe}
+                                deleteRecipe={deleteRecipe}
+                                possibleToMake={possibleToMake} />
+                    </ProtectedRoute>
+                } />
+                <Route path={ValidRoutes.LOGIN} element={<LoginPage isRegistering={false} changeToken={changeToken}
+                                                                    setUsername={(usr: string) => setUsername(usr)}/>} />
+                <Route path={ValidRoutes.REGISTER} element={<LoginPage isRegistering={true} changeToken={changeToken}
+                                                                       setUsername={(usr: string) => setUsername(usr)}/>} />
+                <Route path="*" element={<p>This Page Does Not Exist.</p>} />
             </Routes>
         </div>
     );
+
+
 }
 
 export default App;

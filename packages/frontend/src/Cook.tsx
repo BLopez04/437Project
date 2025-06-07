@@ -5,24 +5,25 @@ import Header from "./modules/Header.tsx";
 import Footer from "./modules/Footer.tsx";
 import ViewRecipesModal from "./modules/ViewRecipesModal.tsx";
 import {useState} from "react";
-import type {IIngredient, IRecipe} from "./App.tsx";
+import type {IApiIngredient} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 import RecipeItem from "./modules/RecipeItem.tsx";
 import ShortRecipeItem from "./modules/ShortRecipeItem.tsx";
 import EffectItem from "./modules/EffectItem.tsx";
 
 interface ICookProps {
     username: string;
-    recipes: IRecipe[];
-    ingredients: IIngredient[]
+    recipes: IApiRecipe[];
+    ingredients: IApiIngredient[]
     deleteRecipe: (name: string) => void;
-    possibleToMake: (recipe: IRecipe, ingredients: IIngredient[]) => void;
+    possibleToMake: (recipe: IApiRecipe, ingredients: IApiIngredient[]) => void;
     subtractIngredientAmounts: (amount1: number, unit1: string, amount2: number, unit2: string) => {amount: number, scale: string}
-    logChanges: (after: IIngredient[]) => void;
+    logChanges: (after: IApiIngredient[]) => void;
 }
 
 function Cook(props: ICookProps) {
     const [modalState, setModalState] =
-    useState<{recipe?: IRecipe, isOpen: boolean}>({ recipe: undefined, isOpen: false });
+    useState<{recipe?: IApiRecipe, isOpen: boolean}>({ recipe: undefined, isOpen: false });
     const [selectedRecipe, setSelectedRecipe] = useState("")
 
     const selectedActual = getRecipe(selectedRecipe)
@@ -63,7 +64,7 @@ function Cook(props: ICookProps) {
         return(props.recipes.find(r => r.name === recipe))
     }
 
-    function setModalOn(recipe: IRecipe) {
+    function setModalOn(recipe: IApiRecipe) {
         const newState = { recipe: recipe, isOpen: true }
         setModalState(newState)
     }

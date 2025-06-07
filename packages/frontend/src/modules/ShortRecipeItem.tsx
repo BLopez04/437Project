@@ -1,11 +1,11 @@
 import "../css/tokens.css"
 import "../css/header.css"
 import "../css/formpagestyles.css"
-import type {IRecipe} from "../App.tsx";
+import type {IApiRecipe} from "csc437-monorepo-backend/src/common/ApiUserData.ts";
 
 interface IShortRecipeItemProps {
-    recipe: IRecipe
-    setModalOn: (recipe: IRecipe) => void;
+    recipe: IApiRecipe
+    setModalOn: (recipe: IApiRecipe) => void;
     setRecipe: (name: string) => void;
     selectedRecipe: string;
 }
