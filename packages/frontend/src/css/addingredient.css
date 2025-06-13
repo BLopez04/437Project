@@ -1,10 +1,11 @@
 
 .input {
     border: var(--color-background-borders) solid 0.2rem;
-    width: 95%;
     margin: 0 2rem 1rem 2rem;
     padding: 2rem;
     gap: 1rem;
+    width: 95%;
+    align-self: center;
     display: flex;
     flex-direction: column;
     color: var(--color-text-body);

@@ -19,7 +19,9 @@ function Ingredient(props: IIngredientProps) {
         <div className="body">
             <Header header="Log Ingredients" username={props.username}/>
             <main>
-                <AddIngredient addIngredient={props.addIngredient}/>
+                <form className={"input"}>
+                    <AddIngredient addIngredient={props.addIngredient}/>
+                </form>
                 <ul role="list"
                     aria-labelledby="list-heading">
                     {

@@ -1,6 +1,7 @@
 import express, {Request, Response} from "express";
 import {CredentialsProvider} from "../CredentialsProvider";
 import jwt from "jsonwebtoken";
+import {UserProvider} from "../userProvider";
 
 export interface IAuthTokenPayload {
     username: string;
@@ -23,7 +24,7 @@ function generateAuthToken(username: string, jwtSecret: string): Promise<string>
     });
 }
 
-export function registerAuthRoutes(app: express.Application, credentialsProvider: CredentialsProvider) {
+export function registerAuthRoutes(app: express.Application, credentialsProvider: CredentialsProvider, userProvider: UserProvider) {
     app.post("/auth/register", async (req: Request, res: Response) => {
         try {
             const { username, password } = req.body;
@@ -42,6 +43,15 @@ export function registerAuthRoutes(app: express.Application, credentialsProvider
                 res.status(409).send({
                     error: "Bad request",
                     message: `Username already taken`
+                });
+                return;
+            }
+
+            const added = await userProvider.addUser(username)
+            if (!added) {
+                res.status(500).send({
+                    error: "Database Error",
+                    message: `Database couldn't add user record`
                 });
                 return;
             }

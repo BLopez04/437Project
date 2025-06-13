@@ -80,8 +80,6 @@ main {
                 }
                 .name {
                     text-align: center;
-                    white-space: nowrap;
-                    overflow: auto;
                 }
                 .symbol {
                     font-size: 80%;

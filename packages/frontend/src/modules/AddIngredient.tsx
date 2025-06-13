@@ -36,7 +36,7 @@ function AddIngredient(props: IAddIngredientProps) {
     }
 
     return (
-        <form className="input">
+        <div className="input">
             <label className="Name">
                 <span>Name</span>
                 <input name="name" placeholder="Enter Ingredient Name"
@@ -73,7 +73,7 @@ function AddIngredient(props: IAddIngredientProps) {
                 <button onClick={handleSubmit}
                 disabled={!nameFieldContents || !amountFieldContents}>Submit</button>
             </label>
-        </form>
+        </div>
     )
 }
 

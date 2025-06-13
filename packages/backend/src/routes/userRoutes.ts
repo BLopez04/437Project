@@ -6,11 +6,9 @@ export function registerUserRoutes(app: express.Application, userProvider: UserP
     app.get("/api/users", async (req: Request, res: Response) => {
         try {
             if (!req.user) {
-                console.log("whoops")
                 throw new Error("No user associated")
             }
             const data = await userProvider.getUserData(req.user?.username)
-            console.log(data)
             res.send(data)
         }
         catch(err) {
@@ -18,5 +16,39 @@ export function registerUserRoutes(app: express.Application, userProvider: UserP
         }
     });
 
+    app.put("/api/users/ingredients", async (req: Request, res: Response) => {
+        try {
+            if (!req.user) {
+                throw new Error("No user associated")
+            }
 
+            if (!req.body) {
+                throw new Error("No ingredient updates provided")
+            }
+            const update = await userProvider
+                .updateIngredients(req.user?.username, req.body)
+            res.status(200).send(update)
+        }
+        catch(err) {
+            res.status(500).send("Failed to post to user ingredients")
+        }
+    });
+
+    app.put("/api/users/recipes", async (req: Request, res: Response) => {
+        try {
+            if (!req.user) {
+                throw new Error("No user associated")
+            }
+
+            if (!req.body) {
+                throw new Error("No ingredient updates provided")
+            }
+            const update = await userProvider
+                .updateRecipes(req.user?.username, req.body)
+            res.status(200).send(update)
+        }
+        catch(err) {
+            res.status(500).send("Failed to post to user ingredients")
+        }
+    });
 }

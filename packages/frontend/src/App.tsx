@@ -24,7 +24,6 @@ function App() {
     if (darkModeState) {
         document.body.classList.add("dark-mode");
     }
-    console.log(authToken)
 
     function changeToken(token: string) {
         setAuthToken(token);
@@ -51,9 +50,7 @@ function App() {
 
             const { ingredients, recipes } = await res.json()
 
-            console.log()
-
-            if (ref.current == newRef) {
+            if (ref.current === newRef) {
                 setIngredientList(ingredients);
                 setRecipeList(recipes)
             }
@@ -64,31 +61,62 @@ function App() {
         }
     }
 
-    function addRecipe(recipe: IApiRecipe) {
+    async function updateUser(body: IApiIngredient[] | IApiRecipe[],
+                              path: string) {
+        try {
+            const res = await fetch(`/api/users/${path}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authToken}`
+                },
+                body: JSON.stringify(body)
+            })
+
+            if (res.status >= 400) {
+                throw new Error(`HTTP error: ${res.status}`)
+            }
+
+            if (path === "recipes") {
+                setRecipeList(body as IApiRecipe[])
+            }
+            else {
+                setIngredientList(body as IApiIngredient[])
+            }
+            console.log(`updated ${path} with`)
+            console.log(body)
+        }
+
+        catch(err) {
+            console.log(`Error is ${err}`);
+        }
+    }
+
+    async function addRecipe(recipe: IApiRecipe) {
         const updatedRecipes = recipeList.filter((rec) => rec.name !== recipe.name)
         const withNew = [recipe, ...updatedRecipes]
-        setRecipeList(withNew)
+        await updateUser(withNew, "recipes")
     }
 
-    function deleteRecipe(name: string) {
+    async function deleteRecipe(name: string) {
         const updatedRecipes = recipeList.filter((rec) => rec.name !== name)
-        setRecipeList(updatedRecipes);
+        await updateUser(updatedRecipes, "recipes")
     }
 
-    function addIngredient(ingredient: IApiIngredient) {
+    async function addIngredient(ingredient: IApiIngredient) {
         const updatedIngredients = ingredientList.filter((ing) => ing.name !== ingredient.name)
         const withNew = [ingredient, ...updatedIngredients]
-        setIngredientList(withNew)
-        refreshRecipes(withNew)
+        await updateUser(withNew, "ingredients")
+        await refreshRecipes(withNew)
     }
 
-    function deleteIngredient(name: string) {
+    async function deleteIngredient(name: string) {
         const updatedIngredients = ingredientList.filter((ing) => ing.name !== name)
-        setIngredientList(updatedIngredients);
-        refreshRecipes(updatedIngredients)
+        await updateUser(updatedIngredients, "ingredients")
+        await refreshRecipes(updatedIngredients)
     }
 
-    function refreshRecipes(ingredients: IApiIngredient[]) {
+    async function refreshRecipes(ingredients: IApiIngredient[]) {
         const updatedRecipes = recipeList.map((recipe) => {
             return {
                 name: recipe.name,
@@ -97,9 +125,7 @@ function App() {
                 ingredients: [...recipe.ingredients]
             }
         })
-        console.log("updated recipes")
-        console.log(updatedRecipes)
-        setRecipeList(updatedRecipes)
+        await updateUser(updatedRecipes, "recipes")
     }
 
     function possibleToMake(recipe: IApiRecipe, ingredients: IApiIngredient[]) {
@@ -133,15 +159,15 @@ function App() {
         return {amount: result, scale: unit1};
     }
 
-    function logChanges(after: IApiIngredient[]) {
+    async function logChanges(after: IApiIngredient[]) {
         const updatedIngredients = ingredientList
             .map((before) => {
                 const updateNeeded = after.find((af) => af.name === before.name);
                 return updateNeeded ? updateNeeded : before;
             })
             .filter((ing) => ing.amount > 0);
-        setIngredientList(updatedIngredients);
-        refreshRecipes(updatedIngredients);
+        await updateUser(updatedIngredients, "ingredients");
+        await refreshRecipes(updatedIngredients);
         console.log(`the new list`)
         console.log(updatedIngredients)
     }

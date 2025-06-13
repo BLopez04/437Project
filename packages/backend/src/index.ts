@@ -47,5 +47,5 @@ app.listen(PORT, () => {
 
 app.use("/api/*", verifyAuthToken);
 
-registerAuthRoutes(app, CREDENTIALS)
+registerAuthRoutes(app, CREDENTIALS, USERPROVIDER)
 registerUserRoutes(app, USERPROVIDER)
